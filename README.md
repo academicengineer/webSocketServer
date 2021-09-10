@@ -1,1 +1,3 @@
 # webSocketServer
+
+    npm run bs
