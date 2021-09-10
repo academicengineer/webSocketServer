@@ -76,6 +76,9 @@ let driver;
 })();
 
 // スライドのページ遷移
+// NAOからcurlがあった場合もしくは
+// NAOのNginxのaccesslogの行数が更新された場合，
+// 次のスライドに遷移するという条件を追記
 
 // スライドサーバの起動
 http.listen(port, function(){
