@@ -4,6 +4,8 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const port = process.env.PORT || 3000;
 const fs = require("fs");
+const webdriver = require('selenium-webdriver');
+const { Builder, By, Key, until } = require('selenium-webdriver');
 
 // ファイルの自動更新 https://blog-and-destroy.com/25538 
 // https://tombomemo.com/browser-sync-install-usage/参考
@@ -27,6 +29,27 @@ app.get('/', function(req, res){
 	// アクセスログのブラウザ表示
 	res.end(access);
 });
+
+// Seleniumによるブラウザの自動起動
+let driver;
+(async () => {
+  try {
+    driver = await new Builder().forBrowser('chrome').build();
+
+    await driver.get('https://www.google.co.jp/');
+    await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+    await driver.wait(until.titleIs('webdriver - Google 検索'), 5000); 
+    // await driver.sleep(5000);
+  }
+  catch(error) {
+    console.error(error);
+  }
+  finally {
+    if(driver) {
+      await driver.quit();
+    }
+  }
+})();
 
 // WebSocketサーバの起動
 http.listen(port, function(){
