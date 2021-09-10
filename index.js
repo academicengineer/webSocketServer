@@ -6,8 +6,9 @@ const port = process.env.PORT || 3000;
 const fs = require("fs");
 const webdriver = require('selenium-webdriver');
 const { Builder, By, Key, until } = require('selenium-webdriver');
+const ssh  = require('node-ssh');
 
-// ファイルの自動更新 https://blog-and-destroy.com/25538 
+// browser-sycnによるファイルの自動更新 https://blog-and-destroy.com/25538 
 // https://tombomemo.com/browser-sync-install-usage/参考
 
 // 接続の確認
@@ -16,6 +17,29 @@ io.on('connection', function(socket){
 		      io.emit('chat message', msg);
 		    });
 });
+
+// NAOへのssh
+async function main() {
+  const ssh = new ssh();
+
+  const sshPassword = 'kashi-lab';
+  
+  // 接続
+  await ssh.connect({
+      host: '192.168.11.18',
+      port: 22,
+      username: 'nao',
+      password: sshPassword
+  });
+
+  // コマンド実行
+  res = await ssh.execCommand('ls -al', {options: {pty: true}});
+
+  // 切断
+  ssh.dispose();
+}
+
+main();
 
 // Nginxサーバのアクセスログの読み込み
 let access = fs.readFileSync("/var/log/nginx/access.log", "utf-8");
@@ -51,7 +75,9 @@ let driver;
   }
 })();
 
-// WebSocketサーバの起動
+// スライドのページ遷移
+
+// スライドサーバの起動
 http.listen(port, function(){
 	  console.log('listening on *:' + port);
 });
