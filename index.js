@@ -7,6 +7,7 @@ const fs = require("fs");
 const webdriver = require('selenium-webdriver');
 const { Builder, By, Key, until } = require('selenium-webdriver');
 const ssh  = require('node-ssh');
+const axios = require('axios');
 
 // browser-sycnによるファイルの自動更新 https://blog-and-destroy.com/25538 
 // https://tombomemo.com/browser-sync-install-usage/参考
@@ -79,6 +80,9 @@ let driver;
 // NAOからcurlがあった場合もしくは
 // NAOのNginxのaccesslogの行数が更新された場合，
 // 次のスライドに遷移するという条件を追記
+
+// NAOにGETリクエストを行う
+// requestは非推奨でaxiosになったので注意
 
 // スライドサーバの起動
 http.listen(port, function(){
